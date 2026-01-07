@@ -183,11 +183,11 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
             //纯客户端模式
             if (SettingUtils.enablePureClientMode) return
 
-            //初始化WorkManager
+            //初始化WorkManager（保留：用于后台任务）
             WorkManager.initialize(this, Configuration.Builder().build())
 
-            //动态加载FrpcLib
-            val libPath = filesDir.absolutePath + "/libs"
+            //精简：移除Frpc动态加载（不需要内网穿透功能）
+            /*val libPath = filesDir.absolutePath + "/libs"
             val soFile = File(libPath)
             if (soFile.exists()) {
                 try {
@@ -196,9 +196,9 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
                 } catch (throwable: Throwable) {
                     Log.e("APP", throwable.message.toString())
                 }
-            }
+            }*/
 
-            //启动前台服务
+            //保留：启动前台服务（用于保活）
             val foregroundServiceIntent = Intent(this, ForegroundService::class.java)
             foregroundServiceIntent.action = ACTION_START
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -207,27 +207,27 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
                 startService(foregroundServiceIntent)
             }
 
-            //启动HttpServer
-            if (HttpServerUtils.enableServerAutorun) {
+            //精简：移除HttpServer启动（不需要HTTP服务器功能）
+            /*if (HttpServerUtils.enableServerAutorun) {
                 Intent(this, HttpServerService::class.java).also {
                     startService(it)
                 }
-            }
+            }*/
 
-            //启动LocationService
-            if (SettingUtils.enableLocation) {
+            //精简：移除LocationService启动（不需要定位功能）
+            /*if (SettingUtils.enableLocation) {
                 val locationServiceIntent = Intent(this, LocationService::class.java)
                 locationServiceIntent.action = ACTION_START
                 startService(locationServiceIntent)
-            }
+            }*/
 
-            //监听电量&充电状态变化
-            val batteryReceiver = BatteryReceiver()
+            //精简：移除电量监听（不需要电量监控功能）
+            /*val batteryReceiver = BatteryReceiver()
             val batteryFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-            registerReceiver(batteryReceiver, batteryFilter)
+            registerReceiver(batteryReceiver, batteryFilter)*/
 
-            //监听蓝牙状态变化
-            val bluetoothReceiver = BluetoothReceiver()
+            //精简：移除蓝牙监听（不需要蓝牙功能）
+            /*val bluetoothReceiver = BluetoothReceiver()
             val filter = IntentFilter().apply {
                 addAction(BluetoothDevice.ACTION_FOUND)
                 addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
@@ -244,20 +244,19 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
                 val bluetoothScanServiceIntent = Intent(this, BluetoothScanService::class.java)
                 bluetoothScanServiceIntent.action = ACTION_START
                 startService(bluetoothScanServiceIntent)
-            }
+            }*/
 
-            //监听网络变化
-            val networkReceiver = NetworkChangeReceiver()
+            //精简：移除网络变化监听（如果不需要可以注释，但可能影响邮件发送时的网络状态检查）
+            /*val networkReceiver = NetworkChangeReceiver()
             val networkFilter = IntentFilter().apply {
                 addAction(ConnectivityManager.CONNECTIVITY_ACTION)
                 addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
                 addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
-                //addAction("android.intent.action.DATA_CONNECTION_STATE_CHANGED")
             }
-            registerReceiver(networkReceiver, networkFilter)
+            registerReceiver(networkReceiver, networkFilter)*/
 
-            //监听锁屏&解锁
-            val lockScreenReceiver = LockScreenReceiver()
+            //精简：移除锁屏监听（如果不需要可以注释）
+            /*val lockScreenReceiver = LockScreenReceiver()
             val lockScreenFilter = IntentFilter().apply {
                 addAction(Intent.ACTION_SCREEN_OFF)
                 addAction(Intent.ACTION_SCREEN_ON)
@@ -265,7 +264,9 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
             }
             registerReceiver(lockScreenReceiver, lockScreenFilter)
             //靠近听筒关屏
-            ProximitySensorScreenHelper.refresh(this)
+            ProximitySensorScreenHelper.refresh(this)*/
+
+            //保留：Cactus保活（重要：确保应用在后台稳定运行，不被系统杀死）
             //Cactus 集成双进程前台服务，JobScheduler，onePix(一像素)，WorkManager，无声音乐
             if (SettingUtils.enableCactus) {
                 //注册广播监听器

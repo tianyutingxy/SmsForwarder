@@ -40,9 +40,10 @@ import com.idormy.sms.forwarder.utils.FlashUtils
 import com.idormy.sms.forwarder.utils.INTENT_FRPC_APPLY_FILE
 import com.idormy.sms.forwarder.utils.Log
 import com.idormy.sms.forwarder.utils.SettingUtils
-import com.idormy.sms.forwarder.utils.TASK_CONDITION_CRON
+//精简：移除自动任务相关导入（不需要自动任务功能）
+//import com.idormy.sms.forwarder.utils.TASK_CONDITION_CRON
 import com.idormy.sms.forwarder.utils.VibrationUtils
-import com.idormy.sms.forwarder.utils.task.CronJobScheduler
+//import com.idormy.sms.forwarder.utils.task.CronJobScheduler
 import com.idormy.sms.forwarder.workers.LoadAppListWorker
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.xuexiang.xutil.XUtil
@@ -273,15 +274,15 @@ class ForegroundService : Service() {
                 CommonUtils.toggleNotificationListenerService(this)
             }
 
-            //启动定时任务
-            GlobalScope.async(Dispatchers.IO) {
+            //精简：移除定时任务启动逻辑（不需要自动任务功能）
+            /*GlobalScope.async(Dispatchers.IO) {
                 val taskList = Core.task.getByType(TASK_CONDITION_CRON)
                 taskList.forEach { task ->
                     Log.d(TAG, "task = $task")
                     CronJobScheduler.cancelTask(task.id)
                     CronJobScheduler.scheduleTask(task)
                 }
-            }
+            }*/
 
             //异步获取所有已安装 App 信息
             if (SettingUtils.enableLoadAppList) {

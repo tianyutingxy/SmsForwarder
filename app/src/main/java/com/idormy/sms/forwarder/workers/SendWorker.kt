@@ -15,19 +15,21 @@ import com.idormy.sms.forwarder.database.entity.Logs
 import com.idormy.sms.forwarder.database.entity.Msg
 import com.idormy.sms.forwarder.database.entity.Rule
 import com.idormy.sms.forwarder.entity.MsgInfo
-import com.idormy.sms.forwarder.entity.TaskSetting
+//精简：移除自动任务相关导入（不需要自动任务功能）
+//import com.idormy.sms.forwarder.entity.TaskSetting
 import com.idormy.sms.forwarder.utils.CHECK_SIM_SLOT_ALL
 import com.idormy.sms.forwarder.utils.DataProvider
 import com.idormy.sms.forwarder.utils.HistoryUtils
 import com.idormy.sms.forwarder.utils.Log
 import com.idormy.sms.forwarder.utils.SendUtils
 import com.idormy.sms.forwarder.utils.SettingUtils
-import com.idormy.sms.forwarder.utils.TASK_CONDITION_APP
-import com.idormy.sms.forwarder.utils.TASK_CONDITION_CALL
-import com.idormy.sms.forwarder.utils.TASK_CONDITION_SMS
-import com.idormy.sms.forwarder.utils.TaskWorker
+//精简：移除自动任务相关导入（不需要自动任务功能）
+//import com.idormy.sms.forwarder.utils.TASK_CONDITION_APP
+//import com.idormy.sms.forwarder.utils.TASK_CONDITION_CALL
+//import com.idormy.sms.forwarder.utils.TASK_CONDITION_SMS
+//import com.idormy.sms.forwarder.utils.TaskWorker
 import com.idormy.sms.forwarder.utils.Worker
-import com.idormy.sms.forwarder.utils.task.ConditionUtils
+//import com.idormy.sms.forwarder.utils.task.ConditionUtils
 import com.xuexiang.xutil.resource.ResUtils
 import com.xuexiang.xutil.security.CipherUtils
 import kotlinx.coroutines.Dispatchers
@@ -52,8 +54,8 @@ class SendWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
                 //【注意】卡槽id：-1=获取失败、0=卡槽1、1=卡槽2，但是 Rule 表里存的是 SIM1/SIM2
                 val simSlot = "SIM" + (msgInfo.simSlot + 1)
 
-                //自动任务处理逻辑
-                autoTaskProcess(msgInfo, msgInfoJson, simSlot)
+                //精简：移除自动任务处理逻辑（不需要自动任务功能）
+                //autoTaskProcess(msgInfo, msgInfoJson, simSlot)
 
                 // 免打扰(禁用转发)时间段
                 var isSilentPeriod = false
@@ -120,7 +122,8 @@ class SendWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
         }
     }
 
-    private fun autoTaskProcess(msgInfo: MsgInfo, msgInfoJson: String, simSlot: String) {
+    //精简：移除自动任务处理逻辑（不需要自动任务功能）
+    /*private fun autoTaskProcess(msgInfo: MsgInfo, msgInfoJson: String, simSlot: String) {
         val conditionType = when (msgInfo.type) {
             "app" -> TASK_CONDITION_APP
             "call" -> TASK_CONDITION_CALL
@@ -174,6 +177,6 @@ class SendWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
             val actionRequest = OneTimeWorkRequestBuilder<ActionWorker>().setInputData(actionData).build()
             WorkManager.getInstance().enqueue(actionRequest)
         }
-    }
+    }*/
 
 }
