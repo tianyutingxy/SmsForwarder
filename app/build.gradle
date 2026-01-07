@@ -85,16 +85,17 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keyProps['keyAlias']
-            keyPassword keyProps['keyPassword']
-            storeFile keyProps['storeFile'] ? file(keyProps['storeFile']) : null
-            storePassword keyProps['storePassword']
+            // 修复：只有当 keystore 配置存在时才设置，避免构建时要求必须提供
+            if (keyPropsFile.exists() && keyProps['storeFile']) {
+                keyAlias keyProps['keyAlias']
+                keyPassword keyProps['keyPassword']
+                storeFile file(keyProps['storeFile'])
+                storePassword keyProps['storePassword']
+            }
         }
+        // debug 使用默认签名，不需要配置
         debug {
-            keyAlias keyProps['keyAlias']
-            keyPassword keyProps['keyPassword']
-            storeFile keyProps['storeFile'] ? file(keyProps['storeFile']) : null
-            storePassword keyProps['storePassword']
+            // Android Studio 会自动使用默认的 debug keystore
         }
     }
 
@@ -138,8 +139,10 @@ android {
             minifyEnabled true
             // 混淆配置
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // 修复：debug 构建始终使用默认的 debug 签名，不需要 keystore
+            // 这样即使 isNeedPackage=true，debug 构建也能正常进行
+            signingConfig signingConfigs.debug
             if (isNeedPackage.toBoolean()) {
-                signingConfig signingConfigs.release
                 if (file('local.properties').exists()) {
                     Properties properties = new Properties()
                     properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -153,7 +156,6 @@ android {
                     buildConfigField "String", "APP_ID_UMENG", '"60254fc7425ec25f10f4293e"'
                 }
             } else {
-                signingConfig signingConfigs.debug
                 buildConfigField "String", "APP_ID_UMENG", '"60254fc7425ec25f10f4293e"'
             }
         }
